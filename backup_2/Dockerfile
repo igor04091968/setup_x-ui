@@ -44,7 +44,7 @@ RUN cat <<'EOF' > /usr/local/bin/start.sh
 export XUI_DB_FOLDER=/tmp
 
 # Set username, password, and web base path
-/usr/local/x-ui/x-ui setting -username prog10 -password '$2b$12$TIqEE9ImkZKYRAZy4xJFZuWsOZN3ryE0Q6p0k3quDYauX/N0IQ.rG'
+/usr/local/x-ui/x-ui setting -username prog10 -password '$2b$12$cvAzqwMK0qzzzQuHXXhsNucb6RN9UD9dqtFUNYrIrvnM6mRmlua6i'
 /usr/local/x-ui/x-ui setting -webBasePath /
 
 # Function to run chisel client in a loop
