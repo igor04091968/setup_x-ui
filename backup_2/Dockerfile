@@ -8,6 +8,10 @@ RUN apt-get update && apt-get install -y \
     tar \
     bash \
     ca-certificates \
+    sqlite3 \
+    net-tools \
+    iproute2 \
+    wireguard-tools \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
