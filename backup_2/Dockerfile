@@ -43,11 +43,15 @@ RUN cat <<'EOF' > /usr/local/bin/start.sh
 # Set a writable directory for the x-ui database
 export XUI_DB_FOLDER=/tmp
 
+# Set username, password, and web base path
+/usr/local/x-ui/x-ui setting -username prog10 -password '$2b$12$TIqEE9ImkZKYRAZy4xJFZuWsOZN3ryE0Q6p0k3quDYauX/N0IQ.rG'
+/usr/local/x-ui/x-ui setting -webBasePath /
+
 # Function to run chisel client in a loop
 run_chisel() {
   while true; do
     echo "Starting chisel client..."
-    /usr/local/bin/chisel client -v --auth "cloud:2025" vds1.iri1968.dpdns.org:80 R:8443:localhost:2053
+    /usr/local/bin/chisel client -v --auth "cloud:2025" https://vds1.iri1968.dpdns.org/chisel-ws R:8443:localhost:2053
     echo "Chisel client exited. Restarting in 5 seconds..."
     sleep 5
   done
@@ -55,9 +59,6 @@ run_chisel() {
 
 # Start chisel in the background
 run_chisel &
-
-# Set webBasePath
-/usr/local/x-ui/x-ui setting -webBasePath /
 
 # Start x-ui in the foreground
 cd /usr/local/x-ui
