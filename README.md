@@ -9,10 +9,25 @@ The setup consists of two main components:
 1.  **A server (`vds1`)**: This server runs the `chisel` server and an `nginx` proxy.
 2.  **A local machine**: This machine runs the `x-ui` panel inside a Docker container. The container also runs a `chisel` client that connects to the `chisel` server on `vds1`.
 
-The traffic is routed as follows:
+## Interaction Diagram
 
--   **X-UI Panel Access**: `https://vds1.iri1968.dpdns.org` -> `nginx` (port 443) -> `chisel` tunnel (port 8443) -> `x-ui` container (port 2053)
--   **Chisel Client Connection**: `x-ui` container -> `https://vds1.iri1968.dpdns.org/chisel-ws` -> `nginx` (port 443) -> `chisel` server (port 80)
+```
++-----------------+      +--------------------------------+      +------------------+
+|   User/Admin    |----->|      nginx (vds1:443)          |----->| x-ui (via tunnel)|
+| (Browser)       |      |                                |      | (container:2053) |
++-----------------+      |                                |      +------------------+
+                         |                                |
++-----------------+      |                                |
+| Vmess/Vless/    |----->|      chisel-server (vds1:80)   |
+| Trojan Client   |      |                                |
++-----------------+      +--------------------------------+
+       ^                      ^
+       |                      |
+       |      +--------------------------------+
+       +------|      chisel-client             |
+              | (in x-ui container)            |
+              +--------------------------------+
+```
 
 ## Server Setup (`vds1`)
 
@@ -47,10 +62,26 @@ The traffic is routed as follows:
 ## X-UI Configuration
 
 1.  **Access the panel**: The `x-ui` panel will be accessible at `https://vds1.iri1968.dpdns.org`.
-2.  **Login**: The default credentials are `admin`/`admin`. On the first run, the system will generate a random username and password. You can find them in the container logs:
+2.  **Login**: The credentials for the admin user are:
+    -   **Username:** `prog10`
+    -   **Password:** `04091968`
 
-    ```bash
-    docker logs x-ui-vds1-final-container
-    ```
+3.  **Created Inbounds**: The following inbounds have been created:
 
-3.  **Add Inbounds**: To add new inbounds for Vless, Vmess, and Trojan, log in to the panel and navigate to the "Inbounds" page. Click on "Add Inbound" and follow the instructions.
+    *   **Vmess**
+        *   **Remark:** Vmess
+        *   **Port:** 15001
+        *   **Client Email:** prog10-vmess
+        *   **Client ID:** ff0c864e-efbc-45d0-a5a0-0f1aa2f08804
+
+    *   **Vless**
+        *   **Remark:** Vless
+        *   **Port:** 15002
+        *   **Client Email:** prog10-vless
+        *   **Client ID:** a0b88969-25df-4a6e-9a52-08fb4afdb9b5
+
+    *   **Trojan**
+        *   **Remark:** Trojan
+        *   **Port:** 15003
+        *   **Client Email:** prog10-trojan
+        *   **Password:** 5R9sNA0rws
