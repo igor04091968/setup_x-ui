@@ -1,0 +1,29 @@
+{
+  "log": {
+    "loglevel": "debug"
+  },
+  "inbounds": [
+    {
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "shadowsocks",
+      "settings": {
+        "servers": [
+          {
+            "address": "127.0.0.1",
+            "port": 15004,
+            "method": "aes-256-gcm",
+            "password": "jStwVlD2B6DxHEOd"
+          }
+        ]
+      }
+    }
+  ]
+}

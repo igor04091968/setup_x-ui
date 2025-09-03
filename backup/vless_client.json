@@ -1,0 +1,33 @@
+{
+  "log": {
+    "loglevel": "debug"
+  },
+  "inbounds": [
+    {
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "127.0.0.1",
+            "port": 15002,
+            "users": [
+              {
+                "id": "a0b88969-25df-4a6e-9a52-08fb4afdb9b5",
+                "encryption": "none"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

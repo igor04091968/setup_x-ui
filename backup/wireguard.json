@@ -1,0 +1,14 @@
+{
+  "up": 0,
+  "down": 0,
+  "total": 0,
+  "remark": "WireGuard",
+  "enable": true,
+  "expiryTime": 0,
+  "listen": "",
+  "port": 15005,
+  "protocol": "wireguard",
+  "settings": "{\"secretKey\":\"8K64NCnE5EUXG4DaQng4RnvrwD2JybB7fKDjmRbULHw=\",\"peers\":[{\"publicKey\":\"PwFvejc70SPHjO3BhPvCA8e0dobGAUgbOKig0JvYjjE=\",\"allowedIPs\":[\"0.0.0.0/0\"]}]}",
+  "streamSettings": "{\"network\":\"udp\"}",
+  "sniffing": "{\"enabled\":true,\"destOverride\":[\"http\",\"tls\"]}"
+}
