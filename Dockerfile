@@ -52,6 +52,9 @@ run_chisel() {
 # Start chisel in the background
 run_chisel &
 
+# Set webBasePath
+/usr/local/x-ui/x-ui setting -webBasePath /
+
 # Start x-ui in the foreground
 cd /usr/local/x-ui
 ./x-ui

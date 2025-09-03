@@ -1,51 +1,56 @@
-# X-UI Docker Setup with Chisel Tunnel and Nginx
+# X-UI Setup with Chisel Tunnel
 
-This project contains the necessary files and instructions to run the `3x-ui` panel in a Docker container and expose it securely via a Chisel tunnel and an Nginx reverse proxy.
+This repository contains the necessary files and instructions to set up a secure X-UI panel with a Chisel tunnel.
 
-## Components
+## Overview
 
-1.  **`Dockerfile`**: Builds a Debian-based Docker image that includes:
-    *   The `3x-ui` panel.
-    *   The `chisel` client (v1.10.1).
-    *   A startup script that runs both `x-ui` and the `chisel` client simultaneously, with auto-restart for the chisel tunnel.
+The setup consists of two main components:
 
-2.  **`nginx.conf`**: A working Nginx server block configuration to be used on the public-facing server (`vds1`). It handles SSL termination (HTTPS) and reverse proxies traffic to the Chisel tunnel endpoint.
+1.  **A server (`vds1`)**: This server runs the `chisel` server and an `nginx` proxy.
+2.  **A local machine**: This machine runs the `x-ui` panel inside a Docker container. The container also runs a `chisel` client that connects to the `chisel` server on `vds1`.
 
-## Deployment Instructions
+The traffic is routed as follows:
 
-### 1. Server Setup (`vds1.iri1968.dpdns.org`)
+-   **X-UI Panel Access**: `https://vds1.iri1968.dpdns.org` -> `nginx` (port 443) -> `chisel` tunnel (port 8443) -> `x-ui` container (port 2053)
+-   **Chisel Client Connection**: `x-ui` container -> `https://vds1.iri1968.dpdns.org/chisel-ws` -> `nginx` (port 443) -> `chisel` server (port 80)
 
-a. **Place Nginx Configuration:**
-   Copy the contents of `nginx.conf` to `/etc/nginx/sites-available/marzban.conf` (or your chosen config file). Ensure it's enabled, typically via a symlink in `/etc/nginx/sites-enabled/`.
+## Server Setup (`vds1`)
 
-b. **Run Chisel Server:**
-   The Chisel server must be running to accept connections from the client in the Docker container. This command should be run in the background.
-   ```bash
-   nohup chisel server --port 80 --reverse > /dev/null 2>&1 &
-   ```
+1.  **Copy the files**: Copy the `server_setup.sh` and `nginx.conf` files to the `/home/x-ui-final-setup` directory on your server.
+2.  **Run the setup script**: Execute the following command as `root`:
 
-c. **Run Nginx:**
-   Make sure Nginx is running with the correct configuration.
-   ```bash
-   sudo nginx -t
-   sudo systemctl start nginx # or reload
-   ```
+    ```bash
+    bash /home/x-ui-final-setup/server_setup.sh
+    ```
 
-### 2. Local Machine Setup (Where Docker is)
+    This script will:
+    -   Kill any running `chisel` server processes.
+    -   Start a new `chisel` server on port 80.
+    -   Test and reload the `nginx` configuration.
 
-a. **Build the Docker Image:**
-   From inside this project directory, run:
-   ```bash
-   docker build -t x-ui-container .
-   ```
+3.  **Configure Nginx**: The `nginx.conf` file provided in this repository should be placed in `/etc/nginx/sites-available/3x-ui.conf`. Make sure to create a symbolic link to it in `/etc/nginx/sites-enabled/`.
 
-b. **Run the Docker Container:**
-   ```bash
-   docker run -d --name x-ui-container x-ui-container
-   ```
+## Docker Container Setup (Local)
 
-## Access
+1.  **Build the Docker image**: From the root of this repository, run the following command:
 
-Once both the server and the local container are running, the `x-ui` panel will be available at:
+    ```bash
+    docker build -t x-ui-vds1-final .
+    ```
 
-**`https://vds1.iri1968.dpdns.org`**
+2.  **Run the Docker container**:
+
+    ```bash
+    docker run -d --name x-ui-vds1-final-container -p 2053:2053 x-ui-vds1-final
+    ```
+
+## X-UI Configuration
+
+1.  **Access the panel**: The `x-ui` panel will be accessible at `https://vds1.iri1968.dpdns.org`.
+2.  **Login**: The default credentials are `admin`/`admin`. On the first run, the system will generate a random username and password. You can find them in the container logs:
+
+    ```bash
+    docker logs x-ui-vds1-final-container
+    ```
+
+3.  **Add Inbounds**: To add new inbounds for Vless, Vmess, and Trojan, log in to the panel and navigate to the "Inbounds" page. Click on "Add Inbound" and follow the instructions.
