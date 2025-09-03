@@ -1,0 +1,28 @@
+{
+  "log": {
+    "loglevel": "debug"
+  },
+  "inbounds": [
+    {
+      "port": 10808,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth"
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "trojan",
+      "settings": {
+        "servers": [
+          {
+            "address": "127.0.0.1",
+            "port": 15003,
+            "password": "5R9sNA0rws"
+          }
+        ]
+      }
+    }
+  ]
+}
